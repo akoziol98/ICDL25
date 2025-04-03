@@ -4,7 +4,7 @@ import pympi
 import glob
 import os
 
-def assign_bins(group, period=60000):
+def assign_bins(group, period):
     """
     Assigns sequential bins based on the first episode and 60s gaps.
     Ensures episodes fit in a bin or extend ≤25% beyond it.
