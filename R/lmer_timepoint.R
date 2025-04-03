@@ -11,7 +11,7 @@ library(moments)
 bins = c('1st bin', '2nd bin', '3rd bin')
 
 # Load data
-df <- read_csv('manual_delta_T3.csv')
+df <- read_csv('')
 
 # Descriptives
 results_delta <- df %>%
@@ -48,13 +48,11 @@ print(skewness(df$Duration_log))
 shapiro.test(df$Duration_log)
 
 # Model 
-df$individual_bin <- relevel(factor(df$individual_bin), ref = "2nd bin")
+df$Task_bin_long <- as.numeric(as.numeric(factor(df$Task_bin_long, 
+                                                 levels = c("1st bin", "2nd bin", "3rd bin"))))
 model <- lmerTest::lmer(Duration_log ~ individual_bin + (1 | id), 
                              data = df)
 
 
 summary(model)
 
-# Compute Cohen's d for each fixed effect
-cohens_d <- t_to_d(t = summary(model)$coefficients[, "t value"], df = summary(model)$coefficients[, "df"])
-print(cohens_d)
