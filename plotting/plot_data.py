@@ -33,8 +33,6 @@ def make_boxplots(df, x_var, y_var, times, x_ticks, colors):
         legend=0,
         palette = colors,
     )
-    ax.axhline(y=7, xmin=0.17, xmax=0.5, color='black', linewidth=1.5)
-    ax.text(0.5, 7, '*', ha='center', va='bottom')
 
     for label in times:
         x_pos = times.index(label)

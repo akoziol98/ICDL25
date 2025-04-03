@@ -5,9 +5,7 @@ from imports.import_data import generateBodyDescriptives, \
     generateManualDescriptives
 
 
-bins_long = ['0-1', '1-2', '2-3', '3-4', '4-5']
 timepoint = 'T3'
-body = generateBodyDescriptives(timepoint)
 manual = generateManualDescriptives(timepoint)
 
 manual = manual[manual['Tier'] != 'mouthing'].reset_index(drop=True)
@@ -21,27 +19,16 @@ print(f"Removed points greater than {outliers_th}."
           f"\nc={len(manual[manual['Duration'] >= outliers_th])}, {(len(manual[manual['Duration'] >= outliers_th]) *100) / len(manual):.2f}%")
 manual = manual[manual['Duration'] < outliers_th]
 
-# Assign individual bins
-df = pd.DataFrame([])
-for n, group in manual.groupby(['id']):
-    if group['Task_bin_long'].unique().shape[0] == 1:
-        continue
-    elif group['Task_bin_long'].unique().shape[0] == 2:
-        continue
-    elif group['Task_bin_long'].unique().shape[0] > 2:
+manual_ind = manual[manual['Task_bin_long'].isin(['1', '2', '3'])]
+bin_counts = manual_ind.groupby('id')['Task_bin_long'].nunique()
+valid_ids = bin_counts[bin_counts >= 3].index
+manual_ind = manual_ind[manual_ind['id'].isin(valid_ids)]
 
-        bins_unq = group['Task_bin_long'].unique()
-        bins_map = dict(zip(bins_unq, list(range(1, len(bins_unq) + 1))))
-        group['individual_bin'] = group['Task_bin_long'].map(bins_map)
-        df = pd.concat([df, group[['id', 'Task_bin_long', 'individual_bin', 'Duration']]])
-
-df['individual_bin'] = df['individual_bin'].map({1: '1st bin',
-                                                 2: '2nd bin',
-                                                 3: '3rd bin',
-                                                 4: '4th bin'})
-
-make_boxplots(df=df,
-              x_var='individual_bin',
+manual_ind['Task_bin_long'] = manual_ind['Task_bin_long'].map({'1': '1st bin',
+                                                               '2': '2nd bin',
+                                                               '3': '3rd bin'})
+make_boxplots(df=manual_ind,
+              x_var='Task_bin_long',
               y_var='Duration',
               times = ['1st bin', '2nd bin', '3rd bin'],
               x_ticks=['1st bin', '2nd bin', '3rd bin'],
