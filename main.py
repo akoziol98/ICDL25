@@ -1,8 +1,5 @@
-import pandas as pd
-from matplotlib import pyplot as plt
 from plotting.plot_data import make_boxplots
-from imports.import_data import generateBodyDescriptives, \
-    generateManualDescriptives
+from imports.import_data import generateManualDescriptives
 
 
 timepoint = 'T3'
@@ -13,7 +10,7 @@ manual['Duration'] = manual['Duration'] / 1000
 manual = manual[manual['Label'].isin(['spinner'])]
 
 # Outliers
-manual = manual[manual['Task_bin_long'].isin(bins_long)]
+manual = manual[manual['Task_bin_long'] != 'Undefined'].reset_index(drop=True)
 outliers_th = 10
 print(f"Removed points greater than {outliers_th}."
           f"\nc={len(manual[manual['Duration'] >= outliers_th])}, {(len(manual[manual['Duration'] >= outliers_th]) *100) / len(manual):.2f}%")

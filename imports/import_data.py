@@ -46,7 +46,7 @@ def generateManualDescriptives(timepoint):
         focusing on specific tiers related to object handling.
 
         Parameters:
-        timepoint (str): The timepoint directory containing the ELAN files.
+        timepoint (str): Indication of the timepoint.
 
         Returns:
         pd.DataFrame: A DataFrame containing the extracted manual annotation data,
